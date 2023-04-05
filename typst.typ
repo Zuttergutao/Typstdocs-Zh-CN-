@@ -22,6 +22,7 @@
     weight:"regular",
     size: 12pt,
 )
+
 // 设置段落
 #set par(
     leading:20pt,
@@ -29,10 +30,6 @@
     first-line-indent: 2em,
 )
 
-// 设置block格式
-#let blockk(term)=block(width:100%,inset: 7pt,radius:5pt,stroke: gray+1pt)[
-    #term
-]
 
 // 设置标题格式
 #set heading(numbering: "1.1.1.1")
@@ -93,6 +90,14 @@
 })
 
 // 设置代码块样式
+
+// 设置block格式
+#let blockk(term)=block(width:100%,inset: 7pt,radius:5pt,stroke: gray+1pt)[
+    #set par(first-line-indent:0em)
+    #text(weight:700,size:11pt,fill: rgb("#FF0000"),"#Demo") \
+    #term
+]
+
 #show raw.where(block: false): box.with(
   fill: luma(240),
   inset: (x: 3pt, y: 0pt),
@@ -111,7 +116,7 @@
                   weight:"regular",
                   size:10pt,
                   spacing: 200%,
-                  it
+                  text(weight:700,size:11pt,fill: rgb("#FF0000"),"#Code") + it
                 )
              )
     ]
@@ -129,7 +134,7 @@
                   weight:"regular",
                   size:10pt,
                   spacing: 200%,
-                  it
+                  text(weight:700,size:11pt,fill: rgb("#FF0000"),"#Func") + it
                 )
              )
     ]
@@ -181,22 +186,39 @@
     #set align(left)
     此文档是我在#link("https://typst.app/")[学习Typst时]，翻译官方manual时的一些记录。当然了，还没有更新完，同时也可以看出文档排版不太优雅。预计在我学完官方文档之后再好好优化一下页面的排版。#parbreak()
     粗略地制作了文档的封面，该封面是仿照《一份(不太)简短的LaTeX 2e介绍》制作的，在此感谢。#parbreak()
-    目前来说Typst很对我的胃口，但是还是存在着很多的问题，但我相信随着更新与发展，typst一定会越来越好用。我在使用过程中遇到了如下的bug或者缺陷：
-    - 对于中文排版不太支持，尤其是标点符号和文字之间的间距控制。
-    - 对于中文字体格式比如说加粗斜体等不支持
-    - 支持绘图
-    - 。。。
+    目前来说Typst很对我的胃口，但是还是存在着很多的问题，但我相信随着更新与发展，typst一定会越来越好用。#parbreak()
+    临时创建了一个微信群，如果有大佬想交流讨论带带小弟的（比如说交流用法，开发新功能等等），可以加下微信群（群有效期到4/12）。也可以添加本人微信：`Casea15852968531`。
+    欢迎各位大佬交流讨论。
+    #set align(center)
+    #figure(image("wechat.jpg",height:30%))
     #set align(right)
     Casea #parbreak()
-    2023.04.04
+    2023.04.05
 ]
 
 #pagebreak()
 
+// 更新历史
+#[  
+    #set page(header:none,numbering:none)
+    #set par(first-line-indent:0em)
+    #set align(center)
+    #text(weight:700,size:20pt)[Change logs]
+    #set align(left)
+    #set list(marker: ([•], [-]))
+    - *2023.04.05：*
+        - 2023/04/04 typst推出了v0.1的正式版本，修正了编号问题（目前从0开始）。在我看来其最大的改进就是中文排版的优化（并不支持斜体加粗等格式）。
+        - 2023/4/5 14:07:58 已完成官方文档的翻译，但是总觉得还缺点什么。想了想那便是自己的理解吧：单纯翻译文档谁都可以做，但是如何使文档更加通俗易懂以及让人快速上手就需要下一点功夫了。
+        - 接下来的安排：使用show set规则将typ文件大幅缩短（预计一半篇幅）；文章结构（调整章节顺序，语句修改）；优化排版（力气活 \u{1F921}）。
+]
+
+#pagebreak()
 
 // 生成目录
 #[
+    #set par(first-line-indent: 0em)
     #set page(header:none,numbering:"I")
+    #counter(page).update(1)
     #outline(title: "目录",indent:true,depth:2)
 ]
 
@@ -204,7 +226,7 @@
 
 // align
 = Align
-
+#counter(page).update(1)
 
 ```para
 // 水平/垂直对直内容
@@ -1286,7 +1308,7 @@ value.darken(ratio) -> color
 value.negate() -> color
 ```
 
-=== sRGB
+=== sRGB <rgb>
 创建RGB色彩，颜色在sRGB空间中指定
 
 ```para
@@ -1314,7 +1336,7 @@ rgb(
     #text(16pt, rgb("#239dad"))[*Typst*]
 ]
 
-=== CMYK
+=== CMYK <cmyk>
 
 创建 CMYK 颜色。如果您想针对特定打印机，这很有用。为显示预览转换为 RGB 可能与您的打印机再现颜色的方式不同。
 
@@ -1338,7 +1360,7 @@ cmyk(
     #square(fill: cmyk(27%, 0%, 3%, 5%))
 ]
 
-=== D65
+=== D65 <luma>
 
 创建灰度图
 
@@ -1359,12 +1381,19 @@ luma(integer ratio) -> color
     }
 ]
 
-== symbol
+== symbol <symbol>
 
 Unicode符号，Typst定义了常用符号，从而轻松输入符号。这些符号在模块中定义，可以使用字段访问。
 - 通用符号在sym module中定义 \
 - Emoji在emoji module中定义 \
 更进一步可以使用symbol函数自定义符号
+
+```para
+// 自定义符号
+// 可以只是一个由单个字符组成的字符串，表示无修饰符变体，也可以是一个数组，其中包含两个指定修饰符和符号的字符串。
+// 各个修饰符应该用点分隔。显示符号时，Typst 从具有所有附加修饰符和最少数量的其他修饰符的变体中选择第一个。
+symbol(..string array) -> symbol
+```
 
 ```typ
 #sym.arrow.r \
@@ -1380,6 +1409,38 @@ $gt.eq.not$ \
     #emoji.face.halo
 ]
 
+```typ
+#let envelope = symbol(
+  "🖂",
+  ("stamped", "🖃"),
+  ("stamped.pen", "🖆"),
+  ("lightning", "🖄"),
+  ("fly", "🖅"),
+)
+
+#envelope
+#envelope.stamped
+#envelope.stamped.pen
+#envelope.lightning
+#envelope.fly
+```
+
+#[
+    #show:blockk
+    #let envelope = symbol(
+        "🖂",
+        ("stamped", "🖃"),
+        ("stamped.pen", "🖆"),
+        ("lightning", "🖄"),
+        ("fly", "🖅"),
+    )
+
+    #envelope
+    #envelope.stamped
+    #envelope.stamped.pen
+    #envelope.lightning
+    #envelope.fly
+]
 许多符号有不同的变体，可以通过在修饰符后面附加点符号来选择。修饰符的顺序无关紧要。访问符号模块的文档页面并单击符号以查看其可用变体。
 
 ```typ
@@ -1394,7 +1455,7 @@ $arrow.t.quad$
     $arrow.t.quad$
 ]
 
-== string
+== string <string>
 
 字符串
 您可以使用 for 循环遍历字符串。字符串可以用 + 运算符相加、连接在一起并与整数相乘。
@@ -1408,6 +1469,9 @@ Typst 提供了用于字符串操作的实用方法。（split, trim, replace）
 #"1,2;3".split(regex("[,;]")) \
 #(regex("\d+") in "ten euros") \
 #(regex("\d+") in "10 euros")
+#str(10) \
+#str(2.7) \
+#str(1e8) \
 ```
 
 #[
@@ -1417,7 +1481,10 @@ Typst 提供了用于字符串操作的实用方法。（split, trim, replace）
     #"1 2 3".split() \
     #"1,2;3".split(regex("[,;]")) \
     #(regex("\d+") in "ten euros") \
-    #(regex("\d+") in "10 euros")
+    #(regex("\d+") in "10 euros") \
+    #str(10) \
+    #str(2.7) \
+    #str(1e8) \
 ]
 
 一些转义序列：
@@ -2787,6 +2854,769 @@ A 56 B 78.
 
 = Math
 
+Typst 有特殊的语法和库函数来排版数学公式。数学公式可以与文本一起显示，也可以作为单独的块显示。如果它们以至少一个空格开始和结束（例如 `$ x^2 $`），它们将被排版到自己的块中。
+在数学中，单个字母总是按原样显示。然而，多个字母被解释为变量和函数。要逐字显示多个字母，可以将它们放在引号中，要访问单个字母变量，您可以使用主题标签语法。 
+
+```typ
+$ A = pi r^2 $
+$ "area" = pi dot.op "radius"^2 $
+$ cal(A) :=
+    { x in RR | x "is natural" } $
+#let x = 5
+$ #x < 17 $
+``` 
+
+#[
+    #show:blockk
+    $ A = pi r^2 $
+    $ "area" = pi dot.op "radius"^2 $
+    $ cal(A) :=
+        { x in RR | x "is natural" } $
+    #let x = 5
+    $ #x < 17 $
+] \
+
+
+数学模式提供多种符号选择，例如 pi、dot.op 或 RR。许多数学符号有不同的变体。您可以通过对符号应用修饰符来在不同的变体之间进行选择。 Typst 进一步识别许多速记序列，如 => 近似于一个符号。当存在这样的速记时，符号的文档会列出它。
+
+```typ
+$ x < y => x gt.eq.not y $
+``` 
+
+#[
+    #show:blockk
+    $ x < y => x gt.eq.not y $
+] \
+
+公式也可以包含换行符。每行可以包含一个或多个对齐点 (&)，然后对齐。
+```typ
+$ sum_(k=0)^n k
+    &= 1 + ... + n \
+    &= (n(n+1)) / 2 $
+```
+
+#[
+    #show:blockk
+    $ sum_(k=0)^n k
+    &= 1 + ... + n \
+    &= (n(n+1)) / 2 $
+] \
+
+数学模式支持不带主题标签前缀的特殊函数调用。在这些“数学调用”中，参数列表的工作方式与代码中的略有不同：
+- 在它们内部，Typst 仍处于“数学模式”。因此，您可以将数学直接写入其中，但需要使用\#来传递代码表达式（字符串除外，数学语法中提供）。
+- 它们支持位置和命名参数，但不支持尾随内容块和参数传播。
+- 它们为二维参数列表提供额外的语法。分号 (;) 将前面用逗号分隔的参数合并到一个数组参数中。
+
+```typ
+$ frac(a^2, 2) $
+$ vec(1, 2, delim: "[") $
+$ mat(1, 2; 3, 4) $
+$ lim_x =
+    op("lim", limits: #true)_x $
+```
+#[
+    #show:blockk
+    $ frac(a^2, 2) $
+    $ vec(1, 2, delim: "[") $
+    $ mat(1, 2; 3, 4) $
+    $ lim_x =
+        op("lim", limits: #true)_x $
+] \
+
+要在数学公式中使用逗号或分号，请使用反斜杠将其转义。另一方面，如果冒号前面直接有标识符，则只能以特殊方式识别冒号，因此在这些情况下要逐字显示它，您可以在它之前插入一个空格。
+以\#开头的函数调用是正常的代码函数调用，不受这些规则的影响。
+所有数学函数都是数学模块的一部分，默认情况下在方程式中可用。在方程式之外，可以通过数学来访问它们。字首。
+
+```typ
+#show math.equation: set text(font: "Fira Math")
+$ sum_(i in NN) 1 + i $
+``` 
+#[
+    #show:blockk
+    #show math.equation: set text(font: "Fira Math")
+    $ sum_(i in NN) 1 + i $
+] \
+
+
+== attach functions
+
+上标，下标和极限，下标、上标和极限。attach 函数支持\$a_b^c\$语法，该语法将顶部和底部附件添加到方程的一部分。attach可以显示为下标/上标或极限。 Typst 会根据基础自动决定哪个更合适，但您也可以使用脚本和限制功能手动控制它。
+
+```para
+// 语法糖：使用下划线 (_) 表示底部附件，使用帽子 (^) 表示顶部附件。
+attach(
+    // 文本
+    content,
+    // 上标内容
+    set top: nonecontent,
+    // 下标内容
+    set bottom: nonecontent,
+) -> content
+```
+
+```typ
+$ sum_(i=0)^n a_i = 2^(1+i) $
+```
+
+#[
+    #show:blockk
+    $ sum_(i=0)^n a_i = 2^(1+i) $
+]
+
+```para
+scripts(
+    // Force a base to display attachments as scripts.
+    content
+) -> content
+```
+
+```typ
+$ scripts(sum)_1^2 != sum_1^2 $
+```
+
+#[
+    #show:blockk
+    $ scripts(sum)_1^2 != sum_1^2 $
+]
+
+```para
+// Force a base to display attachments as limits.
+limits(
+    content
+) -> content
+```
+
+```typ
+$ limits(A)_1^2 != A_1^2 $
+```
+
+#[
+    #show:blockk
+    $ limits(A)_1^2 != A_1^2 $
+]
+
+
+== frac
+
+分数。
+语法糖：使用\/将相邻表达式转换为分数。可以使用圆括号将多个原子分组到一个表达式中。括号会在输出中删除，但您可以嵌套多个以强制使用它们，或者使用转义符号。
+
+```para
+frac(
+    // 分子
+    num: content,
+    // 分母
+    denom: content,
+) -> content
+```
+
+```typ
+$ 1/2 < (x+1)/2 $
+$ ((x+1)) / 2 = frac(a, b) $
+```
+
+#[
+    #show:blockk
+    $ 1/2 < (x+1)/2 $
+    $ ((x+1)) / 2 = frac(a, b) $
+] \
+
+
+== equation
+
+一个数学方程式。可以与文本内联显示或作为单独的块显示。
+语法糖：在\$内写入数学标记以创建方程式。以至少一个空格开始和结束等式将其提升到水平居中的单独块中。
+
+```para
+equation(
+    // 方程式是否显示为单独的块。
+    set block: boolean,
+    // 如何对块级方程进行编号。
+    set numbering: nonestringfunction,
+    content,
+) -> content
+```
+
+```typ
+#set text(font: "New Computer Modern")
+
+Let $a$, $b$, and $c$ be the side
+lengths of right-angled triangle.
+Then, we know that:
+$ a^2 + b^2 = c^2 $
+
+Prove by induction:
+$ sum_(k=1)^n k = (n(n+1)) / 2 $
+```
+
+#[
+    #show:blockk
+    #set text(font: "New Computer Modern")
+
+    Let $a$, $b$, and $c$ be the side
+    lengths of right-angled triangle.
+    Then, we know that:
+    $ a^2 + b^2 = c^2 $
+
+    Prove by induction:
+    $ sum_(k=1)^n k = (n(n+1)) / 2 $
+]
+
+
+```typ
+#set math.equation(numbering: "(1)")
+
+We define:
+$ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
+
+With @ratio, we get:
+$ F_n = floor(1 / sqrt(5) phi.alt^n) $
+```
+
+#[
+    #show:blockk
+    #set math.equation(numbering: "(1)")
+
+    We define:
+    $ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
+
+    With @ratio, we get:
+    $ F_n = floor(1 / sqrt(5) phi.alt^n) $
+]
+
+== vec
+
+列向量。矢量元素中的内容可以与 \& 符号对齐。
+
+```para
+vec(
+    // 向量括号形式："(" "[" "{" "|" "||" 
+    set delim: nonestring,
+    ..content,
+) -> content
+```
+
+```typ
+$ vec(a, b, c) dot.op vec(1, 2, 3)
+    = a + 2b + 3c $
+
+#set math.vec(delim: "[")
+$ vec(1, 2) $
+```
+
+#[
+    #show:blockk
+    $ vec(a, b, c) dot.op vec(1, 2, 3)
+        = a + 2b + 3c $
+    #set math.vec(delim: "[")
+    $ vec(1, 2) $
+]
+
+== matrix
+
+创建矩阵。一行的元素应该用逗号分隔，而行本身应该用分号分隔。分号语法将前面用逗号分隔的参数合并到一个数组中。您还可以使用这种特殊的数学函数调用语法来定义采用二维数据的自定义函数。同一行单元格中的内容可以用 \& 符号对齐。
+
+```para
+mat(
+    // 矩阵括号形式："(" "[" "{" "|" "||"
+    set delim: nonestring,
+    // 具有矩阵行数组的数组。
+    ..array,
+) -> content
+```
+
+
+```typ
+$ mat(
+  1, 2, ..., 10;
+  2, 2, ..., 10;
+  dots.v, dots.v, dots.down, dots.v;
+  10, 10, ..., 10;
+) $
+```
+
+#[
+    #show:blockk
+    $ mat(
+        1, 2, ..., 10;
+        2, 2, ..., 10;
+        dots.v, dots.v, dots.down, dots.v;
+        10, 10, ..., 10;
+    ) $
+]
+
+```typ
+#set math.mat(delim: "[")
+$ mat(1, 2; 3, 4) $
+```
+
+#[
+    #show:blockk
+    #set math.mat(delim: "[")
+    $ mat(1, 2; 3, 4) $
+]
+
+```typ
+#let data = ((1, 2, 3), (4, 5, 6))
+#let matrix = math.mat(..data)
+$ v := matrix $
+```
+
+#[
+    #show:blockk
+    #let data = ((1, 2, 3), (4, 5, 6))
+    #let matrix = math.mat(..data)
+    $ v := matrix $
+]
+
+== cases  
+
+选择语句，区分大小写，对于跨越不同分支的内容可以使用\&对齐。
+
+```para
+cases(
+    // 选择括号形式："(" "[" "{" "|" "||"
+    set delim: string,
+    ..content,
+) -> content
+```
+
+```typ
+$ f(x, y) := cases(
+  1 "if" (x dot.op y)/2 <= 0,
+  2 "if" x "is even",
+  3 "if" x in NN,
+  4 "else",
+) $
+```
+
+#[
+    #show:blockk
+    $ f(x, y) := cases(
+        1 "if" (x dot.op y)/2 <= 0,
+        2 "if" x "is even",
+        3 "if" x in NN,
+        4 "else",
+    ) $
+]
+
+```typ
+#set math.cases(delim: "[")
+$ x = cases(1, 2) $
+```
+
+#[
+    #show:blockk
+    #set math.cases(delim: "[")
+    $ x = cases(1, 2) $
+]
+
+== lr functions
+
+分隔符匹配。lr 函数允许匹配两个定界符并根据它们包含的内容缩放它们。虽然这对于语法匹配的定界符也会自动发生，但 lr 允许您匹配两个任意定界符并精确控制它们的大小。除了 lr 函数之外，Typst 还提供了一些函数来为绝对值、上限值和下限值以及范数创建定界符对。
+
+```para
+// 刻度定界符。虽然匹配的定界符默认缩放，但这可用于缩放不匹配的定界符并更精确地控制定界符缩放。
+lr(
+    // 括号的大小，相对于包裹内容的高度。默认为 100%。
+    set size: auto relative length,
+    content,
+) -> content
+```
+
+```typ
+$ lr(]a, b/2]) $
+$ lr(]sum_(x=1)^n] x, size: #50%) $
+```
+
+#[
+    #show:blockk
+    $ lr(]a, b/2]) $
+    $ lr(]sum_(x=1)^n] x, size: #50%) $
+]
+
+```para
+// 绝对值符号
+abs(
+    content
+) -> content
+```
+
+```typ
+$ abs(x/2) $
+```
+
+#[
+    #show:blockk
+    $ abs(x/2) $
+]
+
+```para
+// 范数符号
+norm(
+    content
+) -> content
+```
+
+```typ
+$ norm(x/2) $
+```
+
+#[
+    #show:blockk
+    $ norm(x/2) $
+]
+
+```para
+// 上半封顶括号
+floor(
+    content
+) -> content
+```
+
+```typ
+$ floor(x/2) $
+```
+
+#[
+    #show:blockk
+    $ floor(x/2) $
+]
+
+```para
+// 下半封顶括号
+ceil(
+    content
+) -> content
+```
+
+```typ
+$ ceil(x/2) $
+```
+
+#[
+    #show:blockk
+    $ ceil(x/2) $
+]
+
+
+== underover functions
+
+等式部分上方或下方的分隔符。大括号和方括号进一步允许您在其下方或上方添加可选注释。
+
+```para
+// 公式下划线 
+underline(content) -> content
+// 公式上划线
+overline(content) -> content
+// 可加注释的下水平括号
+underbrace(
+    content,
+    // 括号下方注释
+    set none content,
+) -> content
+// 可加注释的上水平括号
+overbrace(
+    content,
+    // 括号上方注释
+    set none content,
+) -> content
+// 可加注释的下水平方括号
+underbracket(
+    content,
+    // 注释
+    set none content,
+) -> content
+// 可加注释的上水平方括号
+overbracket(
+    content,
+    // 注释
+    set nonecontent,
+) -> content
+```
+
+```typ
+$ underline(1 + 2 + ... + 5) $
+$ overline(1 + 2 + ... + 5) $
+$ underbrace(1 + 2 + ... + 5, "numbers") $
+$ overbrace(1 + 2 + ... + 5, "numbers") $
+$ underbracket(1 + 2 + ... + 5, "numbers") $
+$ overbracket(1 + 2 + ... + 5, "numbers") $
+```
+
+#[
+    #show:blockk
+    $ underline(1 + 2 + ... + 5) $
+    $ overline(1 + 2 + ... + 5) $
+    $ underbrace(1 + 2 + ... + 5, "numbers") $
+    $ overbrace(1 + 2 + ... + 5, "numbers") $
+    $ underbracket(1 + 2 + ... + 5, "numbers") $
+    $ overbracket(1 + 2 + ... + 5, "numbers") $
+]
+
+
+== accent
+
+给字母添加"帽子"。
+
+```para
+accent(
+    // 加帽子的字母或者字符串
+    base: content,
+    // 帽子类型，见下表
+    accent: string content,
+) -> content
+```
+
+```typ
+$grave(a) = accent(a, `)$ \
+$arrow(a) = accent(a, arrow)$ \
+$tilde(a) = accent(a, \u{0303})$
+```
+
+#[
+    #show:blockk
+    $grave(a) = accent(a, `)$ \
+    $arrow(a) = accent(a, arrow)$ \
+    $tilde(a) = accent(a, \u{0303})$
+] 
+
+```typ
+$arrow(A B C)$
+```
+
+#[
+    #show:blockk
+    $arrow(A B C)$
+]
+#[
+    #set align(center)
+    #table(
+        columns:(auto,auto,auto),
+        inset: 10pt,
+        align:horizon+center,
+        [*Accent*],[*Name*],[*Codepoint*],
+        [Grave],[grave],[\`],
+        [Acute],[acute],[\´],
+        [Circumflex],[hat],[\^],
+        [Tilde],[tilde],[\~],
+        [Macron],[macron],[\-],
+        [Breve],[breve],[\˘],
+        [Dot],[dot],[\.],
+        [Diaeresis],[diaer],[\¨],
+        [Circle],[circle],[\∘],
+        [Double acute],[acute.double],[\˝],
+        [Caron],[grave],[\ˇ],
+        [Right arrow],[arrow, \-\>],[\→],
+        [Left arrow],[arrow.l, \<\-],[\←],
+    )
+]
+
+== variants functions
+
+替换公式中的字体。这些函数与文本函数不同，因为数学字体包含每个字母的多种变体。
+
+```para
+// 数学中的衬线（罗马）字体样式。默认。
+serif(content) -> content
+```
+
+```para
+// Sans-serif字体
+sans(content) -> content
+```
+
+```typ
+$ sans(A B C) $
+```
+
+#[
+    #show:blockk
+    $ sans(A B C) $
+]
+
+```para
+//  Fraktur 字体样式。
+frak(content) -> content
+```
+
+```typ
+$ frak(P) $
+```
+
+#[
+    #show:blockk
+    $ frak(P) $
+]
+
+
+```para
+// 数学中的等宽字体样式。
+mono(content) -> content
+```
+
+```typ
+$ mono(x + y = z) $
+```
+
+#[
+    #show:blockk
+    $ mono(x + y = z) $
+]
+
+```para
+// 数学中的黑板粗体（双打）字体样式。对于大写拉丁字母，还可以通过 NN 和 RR 形式的符号使用黑板粗体。
+bb(content) -> content
+```
+
+```typ
+$ bb(b) $
+$ bb(N) = NN $
+$ f: NN -> RR $
+```
+
+#[
+    #show:blockk
+    $ bb(b) $
+    $ bb(N) = NN $
+    $ f: NN -> RR $
+]
+
+```para
+// 数学中的书法字体样式。
+cal(content) -> content
+```
+
+```typ
+Let $cal(P)$ be the set of ...
+```
+
+#[
+    #show:blockk
+    Let $cal(P)$ be the set of ...
+]
+
+== styles functions
+
+设置公式中的字母形式。这些函数与文本函数不同，因为数学字体包含每个字母的多种变体。
+
+```para
+// 数学中的直立（非斜体）字体样式。
+upright(content) -> content
+// 数学中的斜体字体样式。对于罗马字母和希腊小写字母，这已经是默认值。
+italic(content) -> content
+// 数学中的粗体字体样式。
+bold(content) -> content
+```
+
+```typ
+$ upright(A) != A $
+$ bold(A) := B^+ $
+```
+
+#[
+    #show:blockk
+    $ upright(A) != A $
+    $ bold(A) := B^+ $
+]
+
+== round
+
+使用半括号包围表达式
+
+```para
+round(content) -> content
+```
+
+```typ
+$ round(x/2) $
+```
+
+#[
+    #show:blockk
+    $ round(x/2) $
+]
+
+
+== op
+
+文本运算符。Typst 预定义了运算符 arccos, arcsin, arctan, arg, cos, cosh, cot, ctg, coth, csc, deg, det, dim, exp, gcd, hom, mod, inf, ker, lg, lim, ln, log, min, max, Pr, sec, sin, sinh, sup, tan, tg, tanh, liminf 和 limsup。
+
+```para
+op(
+    // 文本
+    text: string,
+    // Whether the operator should force attachments to display as limits. Defaults to false.
+    set limits: boolean,
+) -> content
+```
+
+```typ
+$ tan x = (sin x)/(cos x) $
+$ op("custom",
+     limits: #true)_(n->oo) n $
+```
+
+#[
+    #show:blockk
+    $ tan x = (sin x)/(cos x) $
+    $ op("custom",
+        limits: #true)_(n->oo) n $
+]
+
+
+== roots function
+
+平方根和多次方根
+
+```para
+// 多次方根
+root(
+    // 几次根
+    index: none content,
+    // 开根表达式
+    radicand: content,
+) -> content
+// 平方根
+sqrt(
+    // 对其求平方根的表达式。
+    radicand: content
+) -> content
+```
+
+```typ
+$ root(3, x) $
+$ sqrt(x^2) = x = sqrt(x)^2 $
+```
+
+#[
+    #show:blockk
+    $ root(3, x) $
+    $ sqrt(x^2) = x = sqrt(x)^2 $
+]
+
+== binom
+
+二项式表达式?
+
+```para
+binom(
+    // 二项式上索引
+    upper: content,
+    // 二项式下索引
+    lower: content,
+) -> content
+```
+
+```typ
+$ binom(n, k) $
+```
+
+#[
+    #show:blockk
+    $ binom(n, k) $
+]
+
 
 = Layout
 
@@ -2849,6 +3679,8 @@ block(
     set below: content,       
     // block与下一个block的间距。优先于spacing。
     // 可以与show结合使用，以调整任意块级元素周围的间距。
+    set clip: boolean,
+    // 是否裁剪内容 (v0.1新增)
     set `none` content,       // block内容
 ) -> content
 ```
@@ -2900,6 +3732,7 @@ box(
     set radius: `relative length` `dictionary`,                   // 盒子圆角半径
     set inset: `relative length` `dictionary`,             // 内容距离盒子边界距离
     set outset: `relative length` `dictionary`,            // 盒子外扩值
+    set clip: boolean,         // 是否裁剪内容 (v0.1新增)
     set `none` `content`,
 ) -> content
 ```
@@ -4297,6 +5130,45 @@ circle(
     ]
 ]
 
+
+== polgon
+
+一个封闭的多边形。多边形由其角点定义并自动闭合。
+
+```para
+polygon(
+    // 如何填充多边形。目前所有的多边形都是根据non-zero winding rule填充的。
+    set fill: none color,
+    // 多边形边界格式设置
+    set stroke: none length color stroke,
+    // 多边形的顶点。每个点都指定为两个相对长度的数组。
+    ..array,
+) -> content
+```
+
+```typ
+#polygon(
+  fill: red,
+  stroke: 2pt + black,
+  (0pt, 0pt),
+  (50%, 0pt),
+  (50%, 4cm),
+  (20%, 4cm),
+)
+```
+
+#[
+    #show:blockk
+    #polygon(
+        fill: red,
+        stroke: 2pt + black,
+        (0pt, 0pt),
+        (50%, 0pt),
+        (50%, 4cm),
+        (20%, 4cm),
+    )
+]
+
 == ellipse
 
 绘制椭圆，参数同上
@@ -4367,6 +5239,7 @@ bibliography(
     // 设置参考文献
     set title: none auto content,
     // 设置引用格式 当前支持: apa author-date ieee mla
+    // v0.1版本"author-date"和"author-title"改名为"chicago-author-date"和"chicago-author-title"
     set style: string,
 ) -> content
 ```
@@ -4395,6 +5268,7 @@ cite(
     // 引文是否应包括括号。
     set brackets: boolean,
     // 引用样式 numerical alphanumerical author-date author-title keys
+    // v0.1版本"author-date"和"author-title"改名为"chicago-author-date"和"chicago-author-title"
     set style: auto string,
 ) -> content
 ```
@@ -4751,6 +5625,36 @@ Let's skip 7.1.
 Still at #counter(heading).display().
 ```
 
+=== how to step (v0.1新增)
+
+当您定义和使用自定义counter时，一般情况下，您应该先step counter然后display it。这样，计数器的step可以取决于它步进的元素。如果您正在为定理编写一个计数器，那么您的定理定义将首先包括计数器步骤，然后才显示计数器和定理的内容。#parbreak()
+
+```typ
+#let c = counter("theorem")
+#let theorem(it) = block[
+  #c.step()
+  *Theorem #c.display():* #it
+]
+
+#theorem[$1 = 1$]
+#theorem[$2 < 3$]
+```
+
+#[
+    #show:blockk
+    #let c = counter("theorem")
+    #let theorem(it) = block[
+        #c.step()
+        *Theorem #c.display():* #it
+    ]
+
+    #theorem[$1 = 1$] 
+    #theorem[$2 < 3$] 
+]
+
+
+#h(2em)机理解释：heading counter的更新取决于heading的层级。通过在heading之前设置heading的step，当到二级heading时，我们可以将step从`1`修正为`1.1`。如果我们在heading之后使用step，那么程序不会知道step的值。这是因为counters必须在计数元素之前step，#strong[并且从0开始]。
+
 === pagecounter
 
 pagecounter是特殊的。它会在每个分页符处自动步进。但与其他counter一样，也可以手动步进。例如，您可以为序言使用罗马页码，然后为主要内容切换为阿拉伯文页码并将pagecounter重置为 1。
@@ -4918,7 +5822,323 @@ document(
 
 = Calculate
 
+Typst因为支持函数，所以支持数值的计算和处理。这些函数是calc module的组成，默认情况下是不会导入的。除了如下的函数以外，calc还定义了常量`pi`、`e`、`inf`、`nan`。#parbreak()
+
+```para
+// 计算给定数的绝对值
+abs(integer | float | length | angle | ratio | fraction) -> any
+// 计算sin值 当使用整数或浮点数调用时，它们将被解释为弧度。
+sin(integer | float | angle) -> float
+// 计算cos值 当使用整数或浮点数调用时，它们将被解释为弧度。
+cos(integer | float | angle) -> float
+// 计算tan值 当使用整数或浮点数调用时，它们将被解释为弧度。
+tan(integer | float | angle) -> float
+// 计算arccos值
+acos(integer | float) -> angle
+// 计算arcsin值
+asin(integer | float) -> angle
+// 计算arctan值
+atan(integer | float) -> angle
+// 计算角度的双曲正弦值 当使用整数或浮点数调用时，它们将被解释为弧度
+sinh(integer | float | angle) -> float
+// 计算角度的双曲余弦值 当使用整数或浮点数调用时，它们将被解释为弧度
+cosh(integer | float | angle) -> float
+// 计算角度的双曲正切值 当使用整数或浮点数调用时，它们将被解释为弧度
+tanh(integer | float | angle) -> float
+// 计算对数 如果未指定底数，则以 10 为底数计算对数。 base:底数
+log(integer | float,base: float,) -> float
+// 最大值
+max(..any) -> any
+// 最小值
+min(..any) -> any
+// 求两个数的模
+mod(dividend: integer | float,divisor: integer | float,) -> integer | float
+// 指数计算
+pow(base: integer | float,exponent: integer | float,) -> integer | float
+// 判断整数是否为奇数
+odd(integer) -> boolean
+// 判断整数是否为偶数
+even(integer) -> boolean
+// 将数字舍入到最接近的整数。可以指定小数位数。
+round(integer | float,digits: integer,) -> integer | float
+// 将数字向下取整
+floor(integer | float) -> integer
+// 将数字向上取整。如果数字已经是整数，则返回原样。
+ceil(integer | float) -> integer
+// 平方根
+sqrt(integer | float) -> float
+// 将数字夹在最大值与最小值之间？
+clamp(integer | float,integer | float,integer | float,) -> integer | float
+```
+
+```typ
+#calc.abs(-5) \
+#calc.abs(5pt - 2cm) \
+#calc.abs(2fr) \
+#calc.sqrt(16) \
+#calc.sqrt(2.5)
+#calc.mod(20, 6) \
+#calc.mod(1.75, 0.5) \
+#calc.pow(2, 3) \
+#calc.log(100) \
+#calc.clamp(5, 0, 4)
+```
+
+#[
+    #show:blockk
+    #calc.abs(-5) \
+    #calc.abs(5pt - 2cm) \
+    #calc.abs(2fr) \
+    #calc.sqrt(16) \
+    #calc.sqrt(2.5) \
+    #calc.mod(20, 6) \
+    #calc.mod(1.75, 0.5) \
+    #calc.pow(2, 3) \
+    #calc.log(100) \
+    #calc.clamp(5, 0, 4)
+]
+
+```typ
+#calc.sin(1.5) \
+#calc.sin(90deg) \
+#calc.cos(90deg) \
+#calc.cos(1.5) \
+#calc.cos(90deg) \
+#calc.tan(1.5) \
+#calc.tan(90deg)
+#calc.acos(0) \
+#calc.acos(1) \
+#calc.asin(0) \
+#calc.asin(1) \
+#calc.atan(0) \
+#calc.atan(1) \
+#calc.sinh(0) \
+#calc.sinh(45deg) \
+#calc.cosh(0) \
+#calc.cosh(45deg) \
+#calc.tanh(0) \
+#calc.tanh(45deg) \
+```
+
+#[
+    #show:blockk
+    #calc.sin(1.5) \
+    #calc.sin(90deg) \
+    #calc.cos(90deg) \
+    #calc.cos(1.5) \
+    #calc.cos(90deg) \
+    #calc.tan(1.5) \
+    #calc.tan(90deg)
+    #calc.acos(0) \
+    #calc.acos(1) \
+    #calc.asin(0) \
+    #calc.asin(1) \
+    #calc.atan(0) \
+    #calc.atan(1) \
+    #calc.sinh(0) \
+    #calc.sinh(45deg) \
+    #calc.cosh(0) \
+    #calc.cosh(45deg) \
+    #calc.tanh(0) \
+    #calc.tanh(45deg) \
+]
+
+```typ
+#calc.max(1, -3, -5, 20, 3, 6) \
+#calc.max("typst", "in", "beta")
+#calc.min(1, -3, -5, 20, 3, 6) \
+#calc.min("typst", "in", "beta") \
+#calc.odd(4) \
+#calc.odd(5) \
+#range(10).filter(calc.odd) \
+#calc.even(4) \
+#calc.even(5) \
+#range(10).filter(calc.even) \
+#calc.round(3.1415, digits: 2) \
+#calc.floor(500.1) \
+#calc.ceil(500.1) \
+```
+
+#[
+    #show:blockk
+    #calc.max(1, -3, -5, 20, 3, 6) \
+    #calc.max("typst", "in", "beta")
+    #calc.min(1, -3, -5, 20, 3, 6) \
+    #calc.min("typst", "in", "beta") \
+    #calc.odd(4) \
+    #calc.odd(5) \
+    #range(10).filter(calc.odd) \
+    #calc.even(4) \
+    #calc.even(5) \
+    #range(10).filter(calc.even) \
+    #calc.round(3.1415, digits: 2) \
+    #calc.floor(500.1) \
+    #calc.ceil(500.1) \
+]
+
 = Construct
+
+Typst支持不同类型值的构造和转换。
+
+== int
+
+将值转换为整数
+- 布尔值转换为0或1
+- 浮点数向下取整
+- 字符串以10为基数解析
+
+```para
+int(boolean | integer | float | string) -> integer
+```
+
+```typ
+#int(false) \
+#int(true) \
+#int(2.7) \
+#{ int("27") + int("4") }
+```
+
+#[
+    #show:blockk
+    #int(false) \
+    #int(true) \
+    #int(2.7) \
+    #{ int("27") + int("4") }
+
+]
+
+== float
+
+将值转为浮点数
+- 布尔值转为0.0或1.0
+- 整数向下取整为64位浮点数
+- 字符串以 10 为基数解析为最接近的 64 位浮点数。支持指数符号。
+
+```para
+float(boolean | integer | float | string) -> float
+```
+
+```typ
+#float(false) \
+#float(true) \
+#float(4) \
+#float("2.7") \
+#float("1e5")
+```
+
+#[
+    #show:blockk
+    #float(false) \
+    #float(true) \
+    #float(4) \
+    #float("2.7") \
+    #float("1e5")
+]
+
+== range
+
+创建一个由数字序列组成的数组。如果你只传递一个位置参数，它被解释为范围的结束。如果你传递两个，它们描述了范围的开始和结束。
+
+```para
+range(
+    // 起始，包含当前位置
+    start: integer,
+    // 结束，不包含当前位置
+    end: integer,
+    // 步长
+    step: integer,
+) -> array
+```
+
+```typ
+#range(5) \
+#range(2, 5) \
+#range(20, step: 4) \
+#range(21, step: 4) \
+#range(5, 2, step: -1)
+```
+
+#[
+    #show:blockk
+    #range(5) \
+    #range(2, 5) \
+    #range(20, step: 4) \
+    #range(21, step: 4) \
+    #range(5, 2, step: -1)
+]
+
+== regex
+
+从字符串创建正则表达式。结果可用作show 规则选择器，或者string方法(find，split，replace)。
+
+```para
+regex(string) -> regex
+```
+
+```typ
+// Works with show rules.
+#show regex("\d+"): set text(red)
+
+The numbers 1 to 10.
+
+// Works with string methods.
+#("a,b;c"
+    .split(regex("[,;]")))
+```
+
+#[
+    #show:blockk
+    #show regex("\d+"): set text(red)
+    The numbers 1 to 10.
+    #("a,b;c"
+        .split(regex("[,;]")))
+]
+
+== cmyk
+
+见之前章节 @cmyk 描述。
+
+== RGB
+
+见之前章节 @rgb 描述
+
+== luma
+
+见之前章节 @luma 描述
+
+== string
+
+见之前章节 @string 描述
+
+== Label
+
+从字符串创建label。将label插入到内容中会将其附加到最近的不是空格的前一个元素。然后，可以通过标签引用该元素并设置其样式。
+语法糖：可以通过将其名称括在尖括号中来创建标签。这适用于标记和代码。
+
+```para
+label(string) -> label
+```
+
+```typ
+#show <a>: set text(blue)
+#show label("b"): set text(red)
+
+Heading <a>
+*Strong* #label("b")
+```
+
+#[
+    #show:blockk
+    #show <a>: set text(blue)
+    #show label("b"): set text(red)
+
+    Heading <a> \
+    *Strong* #label("b")
+]
+
+== symbol
+见之前章节 @symbol 描述
+
 
 = Data Loading
 
@@ -5119,6 +6339,28 @@ xml(path: string) -> array
 //     }
 // }
 // ]
+
+== yaml
+
+从 YAML 文件中读取结构化数据。该文件必须包含有效的 YAML 对象或数组。 YAML 映射将转换为 Typst 字典，YAML 序列将转换为 Typst 数组。字符串和布尔值将被转换为 Typst 等价物，空值（null、~ 或空``）将被转换为无，数字将被转换为浮点数或整数，具体取决于它们是否为整数。请注意，不是字符串的映射键会导致条目被丢弃。自定义 YAML 标签将被忽略，但加载的值仍然存在。该函数返回字典或值或数组，具体取决于 YAML 文件。
+
+```para
+yaml(path: string) -> arrayvaluedictionary
+```
+
+```typ
+#let bookshelf(contents) = {
+  for author, works in contents {
+    author
+    for work in works [
+      - #work.title (#work.published)
+    ]
+  }
+}
+
+#bookshelf(yaml("scifi-authors.yaml"))
+```
+
 = Foundations
 
 == Assert
