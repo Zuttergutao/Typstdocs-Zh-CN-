@@ -1,0 +1,14 @@
+ss:
+  type: ieee
+  title: 哈利波特骑着扫帚飞
+  author: ["文献格式","文文档","搭的上"]
+
+yy:
+  type: ieee
+  title: 哈利波特骑着扫帚飞
+  author: 
+    - 文献格式
+    - 文文档
+    - 搭的上
+
+
