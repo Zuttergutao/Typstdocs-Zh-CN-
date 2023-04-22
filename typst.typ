@@ -11,6 +11,8 @@
         #set text(10pt)
         #h(1fr)
         #emph("Typst 中文文档 translated by Casea")
+        #v(-0.8em)
+        #line(length:100%,stroke:1pt)
     ],
     numbering:"1/1",
     number-align:center,
@@ -47,11 +49,12 @@
             // pagebreak()
         }
         #set par(first-line-indent: 0pt)
+        #set align(center)
         #let is-ack = it.body in ([Acknowledgment], [Acknowledgement])
         #set text(if is-ack { 15pt } else { 15pt },font:("Times New Roman","SimSun"))
         #v(36pt, weak: true)
         #if it.numbering != none and not is-ack {
-        numbering("1.", deepest)
+        numbering("第 1 章", deepest)
         h(3pt, weak: true)
         }
         #it.body
@@ -61,7 +64,7 @@
         #set text(size:14pt,font:("Times New Roman","SimSun"))
         #v(24pt, weak: true)
         #if it.numbering != none {
-        numbering("1.1.",..levels)
+        numbering("1.1 ",..levels)
         h(3pt, weak: true)
         }
         #it.body
@@ -71,7 +74,7 @@
         #set text(size:14pt,font:("Times New Roman","SimSun"))
         #v(15pt, weak: true)
         #if it.numbering != none {
-        numbering("1.1.1.",..levels)
+        numbering("1.1.1 ",..levels)
         h(3pt, weak: true)
         }
         #it.body
@@ -81,7 +84,7 @@
         #set text(size:12pt,font:("Times New Roman","SimSun"))
         #v(12pt, weak: true)
         #if it.numbering != none {
-        numbering("1.1.1.1.",..levels)
+        numbering("1.1.1.1 ",..levels)
         h(3pt, weak: true)
         }
         #it.body
@@ -165,12 +168,12 @@
     #place(
         right,
         dy:40%,
-        text(weight:400,style:"italic",size:16pt)[版本: April 04, 2023]
+        text(weight:400,style:"italic",size:16pt)[版本: April 11, 2023]
     )
     #place(
         right,
         dy:44%,
-        text(weight:400,style:"italic",size:16pt)[日期: April 09, 2023]
+        text(weight:400,style:"italic",size:16pt)[日期: April 22, 2023]
     )
 
 
@@ -185,16 +188,13 @@
     #set align(center)
     #text(weight:700,size:28pt)[前言]
     #set align(left)
-    此文档是我在#link("https://typst.app/")[学习Typst时]，翻译官方manual时的一些记录。当然了，还没有更新完，同时也可以看出文档排版不太优雅。预计在我学完官方文档之后再好好优化一下页面的排版。#parbreak()
+    此文档是我在#link("https://typst.app/")[学习Typst时]，翻译官方manual时的一些记录。目前，全文已经翻译完了，但是请时刻关注翻译的版本与官网的版本。因为有一定的翻译滞后性以及官网更新的频繁，所以可能出现有些功能不能使用。之后的工作就是好好优化一下页面的排版。#parbreak()
     粗略地制作了文档的封面，该封面是仿照《一份(不太)简短的LaTeX 2e介绍》制作的，在此感谢。#parbreak()
     目前来说Typst很对我的胃口，但是还是存在着很多的问题，但我相信随着更新与发展，typst一定会越来越好用。#parbreak()
-    临时创建了一个微信群，如果有大佬想交流讨论带带小弟的（比如说交流用法，开发新功能等等），可以加下微信群（群有效期到4/12）。也可以添加本人微信：`Casea15852968531`。
-    欢迎各位大佬交流讨论。
-    #set align(center)
-    #figure(image("wechat.jpg",height:30%))
+    欢迎加入#link("https://typst.cn/#/")[typst中文社区:https://typst.cn]!
     #set align(right)
     Casea #parbreak()
-    2023.04.05
+    2023.04.22
 ]
 
 #pagebreak()
@@ -207,6 +207,11 @@
     #text(weight:700,size:20pt)[Change logs]
     #set align(left)
     #set list(marker: ([•], [-]))
+    - *2023.04.22:*
+        - loops取消了对index和value的迭代，现在可以通过unpacking和enumerating处理。map()方法同理。目前的写法`(index,value) in keys.enumerate()`。
+        - 字典方法现在可以使用插入顺序而不是字母顺序。
+        - 新增了`unpacking(),enumerate(),path,layout,sorted()`method。
+        - 添加了`New Computer Modern`字体。
     - *2023.04.09:*
         - 对于源码部分使用等宽字体`Monospac821 BT`，感谢supernova的建议。
         - 对标题进行了部分汉化，但是是缺少一点味道。
@@ -225,11 +230,22 @@
 #[
     #set par(first-line-indent: 0em)
     #set page(header:none,numbering:"I")
-    #counter(page).update(1)
+    #counter(page).update(1) 
     #outline(title: "目录",indent:true,depth:2)
 ]
 
 #pagebreak()
+
+#[
+    #set heading(numbering: none)
+    #show heading: it => block[
+        #set align(center)
+        #set text(size:28pt,weight:700)
+        #it.body
+    ]
+    = Part I 简明教程
+
+]
 
 // align
 = 内容对齐
@@ -808,6 +824,16 @@ grid(
 #pagebreak()
 
 
+#[
+    #set heading(numbering: none)
+    #show heading: it => block[
+        #set align(center)
+        #set text(size:28pt,weight:700)
+        #it.body
+    ]
+    = Part II 手册
+
+]
 
 // Styling
 = 自定义格式
@@ -1003,6 +1029,73 @@ Sum is #add(2, 3).
     Sum is #add(2, 3).
 ]
 
+Let可以用于解构数组以及字典
+
+```typ
+#let (x, y) = (1, 2)
+The coordinates are #x, #y.
+
+#let (a, .., b) = (1, 2, 3, 4)
+The first element is #a.
+The last element is #b.
+
+#let books = (
+  Shakespeare: "Hamlet",
+  Homer: "The Odyssey",
+  Austen: "Persuasion",
+)
+
+#let (Austen,) = books
+Austen wrote #Austen.
+
+#let (Homer: h) = books
+Homer wrote #h.
+
+#let (Homer, ..other) = books
+#for (author, title) in other [
+  #author wrote #title.
+]
+```
+
+#[
+    #show:blockk
+    #let (x, y) = (1, 2)
+    The coordinates are #x, #y.
+
+    #let (a, .., b) = (1, 2, 3, 4)
+    The first element is #a.
+    The last element is #b.
+
+    #let books = (
+    Shakespeare: "Hamlet",
+    Homer: "The Odyssey",
+    Austen: "Persuasion",
+    )
+
+    #let (Austen,) = books
+    Austen wrote #Austen.
+
+    #let (Homer: h) = books
+    Homer wrote #h.
+
+    #let (Homer, ..other) = books
+    #for (author, title) in other [
+    #author wrote #title.
+    ]
+]
+
+也可以使用下划线丢弃解构模式中的元素
+
+```typ
+#let (_, y, _) = (1, 2, 3)
+The y coordinate is #y.
+```
+
+#[
+    #show:blockk
+    #let (_, y, _) = (1, 2, 3)
+    The y coordinate is #y.
+]
 == 条件判断语句
 
 判断语句，可以根据条件来显示和计算不同的内容。目前`Typst`支持`if`, `else if`和`else`语句。
@@ -1063,16 +1156,12 @@ Sum is #add(2, 3).
     遍历字符串的字符。（从技术上讲，迭代字符串的字素簇。大多数时候，一个字素簇只是一个字符/代码点。但是，由多个代码点组成的标志表情符号等一些结构仍然只是一个簇。）
 
 - for value in array {..} \
-    for index, value in array {..}\
     迭代数组中的值。还可以提供每个值的索引。
 
-- for value in dict {..}\
-    for key, value in dict {..}\
+- for pair in dict {..}\
+    for (key, value) in dict {..}\
     迭代字典的键值对
 
-- for value in args {..}\
-    for name, value in args {..}\
-    迭代args的键值
 
 为了控制循环的执行，Typst 提供了 break 和 continue 语句。前者提前退出循环，而后者跳到循环的下一次迭代。
 
@@ -1683,6 +1772,9 @@ value.position(function) -> integer none
 value.filter(function) -> array
 // 根据目标函数创建新数组
 value.map(function) -> array
+// 返回新的数组包含值和index
+// 返回的数组有长度为2的数组(index,value)对组成。可以使用let或者for函数解构
+value.enumerate() -> array
 // 使用累加将所有项合并为一个值
 value.fold(any,function,) -> any
 // 只要一个值满足函数返回true就返回true
@@ -1696,13 +1788,15 @@ value.rev() -> array
 // 将所有项合并为一个数组
 value.join(separator: any,last: any,) -> any
 // 排序
-value.sorted() -> array
+// key:如果给定，则将函数用于数组中的元素以筛选排序的键
+value.sorted(key:function) -> array
 ```
 
 
 == 字典
 
-字典：键值对。通过在大括号中使用逗号分隔的键：值来构造字典。这些值不必是相同的类型。字典在概念上类似于数组，但它是由字符串索引而不是整数索引的。可以使用.at（）方法访问和创建字典条目。如果知道key，那么您也可以使用字段访问表示法（.key）来访问对应value。字典可以使用+运算符添加并连接在一起。要检查字典中是否存在关键字，请使用in关键字。可以使用for循环来迭代字典中的对。字典总是按键排序。由于空括号已经产生了一个空数组，因此必须使用特殊的（：）语法来创建一个空字典。
+字典：键值对。通过在大括号中使用逗号分隔的键：值来构造字典。这些值不必是相同的类型。字典在概念上类似于数组，但它是由字符串索引而不是整数索引的。可以使用.at（）方法访问和创建字典条目。如果知道key，那么您也可以使用字段访问表示法（.key）来访问对应value。字典可以使用+运算符添加并连接在一起。要检查字典中是否存在关键字，请使用in关键字。可以使用for循环来迭代字典中的键值对。字典总是按键排序。由于空括号已经产生了一个空数组，因此必须使用特殊的(:)语法来创建一个空字典。
+
 
 ```typ
 #let dict = (
@@ -3593,7 +3687,7 @@ $ round(x/2) $
 
 == 运算符
 
-文本运算符。Typst 预定义了运算符 arccos, arcsin, arctan, arg, cos, cosh, cot, ctg, coth, csc, deg, det, dim, exp, gcd, hom, mod, inf, ker, lg, lim, ln, log, min, max, Pr, sec, sin, sinh, sup, tan, tg, tanh, liminf 和 limsup。
+文本运算符。Typst 预定义了运算符 arccos, arcsin, arctan, arg, cos, cosh, cot, ctg, coth, csc, deg, det, dim, exp, gcd, hom, mod, inf, ker, lg, lim, ln, log, max, min, Pr, sec, sin, sinc, sinh, sup, tan, tg, tanh, liminf和limsup.
 
 ```para
 op(
@@ -4949,7 +5043,7 @@ terms(
 
 #[
     #show:blockk
-    #for year, product in (
+    #for (year, product) in (
         "1978": "TeX",
         "1984": "LaTeX",
         "2019": "Typst",
@@ -5185,7 +5279,7 @@ circle(
 
 == 路径path 
 
-使用路径绘制图形，通过点列表绘制，曲线为贝塞尔曲线 (v0.1还未实现)
+使用路径绘制图形，通过点列表绘制，曲线为贝塞尔曲线 (v0.2新增)
 
 ```para
 path(
@@ -5213,7 +5307,17 @@ path(
   ((50%, 0pt), (40pt, 0pt)),
 )
 ```
-
+#[
+    #show:blockk
+    #path(
+        fill: blue.lighten(80%),
+        stroke: blue,
+        closed: true,
+        (0pt, 50pt),
+        (100%, 50pt),
+        ((50%, 0pt), (40pt, 0pt)),
+    )
+]
 
 
 == 多边形polgon
@@ -5492,6 +5596,66 @@ This is a normal heading.
 This heading does not appear
 in the outline.
 ```
+
+== 布局Layout
+
+对当前外部容器大小(如果none则设置页面)进行修改（宽度和高度）#parbreak()
+给定函数必须接受单一参数，也即高和宽使用字典的形式传递。
+
+```typ
+#let text = lorem(30)
+#layout(size => style(styles => [
+  #let (height,) = measure(
+    block(width: size.width, text),
+    styles,
+  )
+  This text is #height high with
+  the current page width: \
+  #text
+]))
+```
+
+#[
+    #show:blockk
+    #let text = lorem(30)
+    #layout(size => style(styles => [
+    #let (height,) = measure(
+        block(width: size.width, text),
+        styles,
+    )
+    This text is #height high with
+    the current page width: \
+    #text
+    ]))
+]
+
+如果布局调用放置在宽度为 800pt、高度为 400pt 的框内，则指定的函数将被赋予参数（宽度：800pt，高度：400pt）。如果它直接放在页面中，它会收到页面的尺寸减去边距。这在与测量结合时最有用。 #parbreak()
+您还可以使用此函数将比率解析为固定长度。如果您正在构建自己的布局抽象，这可能会派上用场。
+
+```typ
+#layout(size => {
+  let half = 50% * size.width
+  [Half a page is #half wide.]
+})
+```
+
+#[
+    #show:blockk
+    #layout(size => {
+        let half = 50% * size.width
+        [Half a page is #half wide.]
+    })
+]
+
+请注意，如果页面宽度或高度之一分别为自动，则此函数将提供无限宽度或高度。
+
+```para
+用外部容器的大小来调用的函数。它的返回值显示在文档中。
+容器的尺寸是以字典的形式给出的，有宽度和高度两个键。
+布局返回的内容每次出现在文档中时，都会调用这个函数一次。这使得生成的内容有可能取决于它所在的容器的大小。
+layout(function) -> content
+```
+
 == 编号numbering
 
 编号定义应如何将数字序列显示为内容。它通过模式字符串或任意函数定义。编号模式由计数符号、它们的前缀和一个后缀组成，实际数字被替换为计数符号。前缀和后缀按原样重复。
@@ -6581,15 +6745,15 @@ type(any) -> string
 
 
     #let arr=()
-    #for ii,i in symm.keys() [
+    #for (ii,i) in symm.keys().enumerate() [
         #if type(symm.at(i)) == "dictionary" {
-            for jj,j in symm.at(i).keys() [
+            for (jj,j) in symm.at(i).keys().enumerate() [
                 #if type(symm.at(i).at(j)) == "dictionary" {
-                    for kk,k in symm.at(i).at(j).keys() [
+                    for (kk,k) in symm.at(i).at(j).keys().enumerate() [
                         #if type(symm.at(i).at(j).at(k))=="dictionary" {
-                            for mm,m in symm.at(i).at(j).at(k).keys() [
+                            for (mm,m) in symm.at(i).at(j).at(k).keys().enumerate() [
                                 #if type(symm.at(i).at(j).at(k).at(m))=="dictionary" {
-                                    for nn,n in symm.at(i).at(j).at(k).at(m).keys() [
+                                    for (nn,n) in symm.at(i).at(j).at(k).at(m).keys().enumerate() [
                                         #if  symm.at(i).at(j).at(k).at(m).keys().at(nn) == "o" [
                                             #arr.push(align(center+horizon)[#box[#symm.at(i).at(j).at(k).at(m).at(n)] \ #text(size:10pt)[#symm.keys().at(ii)\.#symm.at(i).keys().at(jj)\.#symm.at(i).at(j).keys().at(kk)\.#symm.at(i).at(j).at(k).keys().at(mm)]])
                                         ] else [
