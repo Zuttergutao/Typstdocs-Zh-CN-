@@ -90,10 +90,11 @@
     ast: (
         o:"*",
         low: "⁎",
+        basic: "\u{002A}",
         double: "⁑",
         triple: "⁂",
         small: "﹡",
-        op: "∗",
+        op: "\u{2217}",
         circle: "⊛",
         sq: "⧆",
     ),
@@ -129,8 +130,9 @@
     ),
     dot: (
         o:".",
-        op: "⋅",
+        op: "\u{22C5}",
         c: "·",
+        basic: "\u{002E}",
         circle: (
             o:"⊙",
             big: "⨀",
@@ -193,6 +195,7 @@
     tilde: (
         o:"~",
         op: "∼",
+        basic: "\u{007E}",
         eq: (
             o:"≃",
             "not": "≄",
