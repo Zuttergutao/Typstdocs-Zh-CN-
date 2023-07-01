@@ -1,6 +1,11 @@
 # Typst 的中文教程
 
 # ***Typst.pdf为官网doc的不详尽翻译版本，由typst生成！***
+
+欢迎加入Typst 非官方中文交流QQ群：793548390
+
+<img src="https://github.com/Zuttergutao/Typstdocs-Zh-CN-/assets/40693240/368178f0-6d8e-4f4d-bc39-f9d1e8bc9217" width="25%"/>
+
  2023/05/29 更新至version 0.4 手册新增脚注以及LaTex用户指南  
  > 开发者称脚注必须在文章开头设置并且全文一致
    
