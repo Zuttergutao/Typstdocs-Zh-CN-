@@ -169,12 +169,12 @@
     #place(
         right,
         dy:40%,
-        text(weight:400,style:"italic",size:16pt)[版本: June 20, 2023]
+        text(weight:400,style:"italic",size:16pt)[版本: June 30, 2023]
     )
     #place(
         right,
         dy:44%,
-        text(weight:400,style:"italic",size:16pt)[日期: June 23, 2023]
+        text(weight:400,style:"italic",size:16pt)[日期: July 03, 2023]
     )
 
 
@@ -208,6 +208,8 @@
     #text(weight:700,size:20pt)[Change logs]
     #set align(left)
     #set list(marker: ([•], [-]))
+    - *2023.06.30 Version 0.6.0:*
+        - 内置了包管理工具。可以导入社区发布包或者自行创建。
     - *2023.06.23 Version 0.5.0:*
         - 支持更多代码高亮。
         - 扩展了大纲格式设定。
@@ -1739,6 +1741,24 @@ Methods是Typst中唯一可以修改调用值的函数。
     #import emoji: face
     #face.grin
 ]
+
+== Packages
+
+为了在不同的项目中重复使用构建块，你也可以创建和导入Typst包。一个包的导入需要指定三个要素：namespce、name、version。
+
+```typ
+#import "@preview/example:0.1.0": add
+#add(2, 7)
+```
+
+#[
+    #show:blockk
+    #import "@preview/example:0.1.0": add
+    #add(2, 7)
+]
+
+`preview` namespace包含社区共享的软件包。你可以在https://typst.app/docs/packages/ 找到可用的社区软件包的可搜索列表。
+如果你在本地使用Typst，你也可以创建你自己的系统本地包。有关这方面的更多细节，请参见https://github.com/typst/packages。
 
 == 运算符
 
@@ -3765,7 +3785,10 @@ $ scripts(sum)_1^2 != sum_1^2 $
 ```para
 // Force a base to display attachments as limits.
 limits(
-    content
+    content,
+    // 是否也要在内联方程中强制限制。
+    // 当全局应用限制时（例如，通过显示规则），一般来说，禁用这个是个好主意。
+    inline: boolean,
 ) -> content
 ```
 
@@ -4402,6 +4425,95 @@ $ sqrt(x^2) = x = sqrt(x)^2 $
     $ root(3, x) $
     $ sqrt(x^2) = x = sqrt(x)^2 $
 ]
+
+== Sizes
+
+强制公式内表达式的大小样式。
+这些函数允许手动配置方程元素的大小，使它们看起来像在显示/内联方程中，或者就像在根或子/上标中使用一样。
+
+=== display function
+
+强制数学公式的显示样式。这是block equations的正常显示大小。
+
+```typ  
+$sum_i x_i/2 = display(sum_i x_i/2)$
+```
+
+#[
+    #show:blockk
+    $sum_i x_i/2 = display(sum_i x_i/2)$
+]
+
+```para
+display(
+    content,
+    // 是否对指数施加高度限制，就像常规的上下标一样，default:false
+    cramped: boolean,
+) -> content
+```
+
+=== inline function
+
+强制数学公式为inline显示样式。这是inline equations的正常显示大小。
+
+```typ  
+$ sum_i x_i/2 = inline(sum_i x_i/2) $
+```
+
+#[
+    #show:blockk
+    $ sum_i x_i/2 = inline(sum_i x_i/2) $
+]
+
+```para
+inline(
+    content,
+    // 是否对指数施加高度限制，就像常规的上下标一样，default:false
+    cramped: boolean,
+) -> content
+```
+
+=== script function
+
+强制数学公式为script显示样式。这是幂、下标或上标中使用的较小尺寸。
+
+```typ  
+$sum_i x_i/2 = script(sum_i x_i/2)$
+```
+
+#[
+    #show:blockk
+    $sum_i x_i/2 = script(sum_i x_i/2)$
+]
+
+```para
+script(
+    content,
+    // 是否对指数施加高度限制，就像常规的上下标一样，default:false
+    cramped: boolean,
+) -> content
+```
+
+=== sscript function
+
+强制数学公式为二级script显示样式。这是最小的尺寸，用于二级下标和上标（脚本的脚本）。（更小的显示大小）
+
+```typ  
+$sum_i x_i/2 = sscript(sum_i x_i/2)$
+```
+
+#[
+    #show:blockk
+    $sum_i x_i/2 = sscript(sum_i x_i/2)$
+]
+
+```para
+sscript(
+    content,
+    // 是否对指数施加高度限制，就像常规的上下标一样，default:false
+    cramped: boolean,
+) -> content
+```
 
 == cancel
 在方程的一部分上显示对角线。这通常用于表示一个术语的消除。
@@ -5181,6 +5293,9 @@ _Typing speeds can be
 == 页面格式page
 
 设置页面格式
+将其子级布局到一页或多页上。
+尽管此函数主要用于设置规则以影响页面属性，但它也可用于将其参数显式呈现到其自己的一组页面上。
+页面可以设置为使用 auto 作为自适应宽度或高度。在这种情况下，页面将增长以适应各自轴上的内容。
 
 ```para
 page(
@@ -5194,8 +5309,10 @@ page(
     set flipped: boolean,
     // 页边距
     // 可以使用字典{ }单独设置边距，
-    // (top: value,right: value,bottom: value,left: value,x: value,y: value,z: value,rest: value)
+    // (top: value,right: value,bottom: value,left: value,inside: value,outside: value, x: value,y: value,z: value,rest: value)
     set margin: auto relative length dictionary,
+    // 页面装订位置 auto(=left) left right
+    set binding: auto alignment
     // 列数
     set columns: integer,
     // 背景颜色
@@ -5367,7 +5484,12 @@ not understand our approach...
 
 ```para
 // if true, 如果当前页为空，则不使用分页符
-pagebreak(set weak:boolean) -> content
+pagebreak(
+    weak: boolean,
+    // 如果给定，则确保下一页将是偶数/奇数页，如有必要，中间有一个空页。
+    // even(下一页偶数页) odd(下一页奇数页)
+    to: nonestring,
+) -> content
 ```
 
 ```typ
@@ -5379,6 +5501,13 @@ more details on compound theory.
 In 1984, the first ...
 ```
 
+```typ
+#set page(height: 30pt)
+
+First.
+#pagebreak(to: "odd")
+Third.
+```
 
 == 段落par
 
@@ -6748,7 +6877,10 @@ value.position() -> dictionary
 
 == 大纲outline
 
-生成大纲/目录，此函数生成文档中所有标题的列表，直到给定深度。
+生成大纲/目录，此函数生成文档中所有标题的列表，直到给定深度。  
+
+元素的编号和页码将显示在大纲中及其标题或标题旁边。
+
 
 ```para
 outline(
@@ -6802,6 +6934,8 @@ outline(
 #lorem(10)
 ```
 
+#h(2em)通过设置target参数，大纲可用于生成除标题之外的其他类型元素的列表。在下面的示例中，我们通过将 target 设置为`figure.where(kind: image)` 来列出所有包含图像的图形。我们也可以将其设置为仅图形，但列表中还将包括包含表格或其他材料的图形。
+
 ```typ
 #outline(
   title: [List of Figures],
@@ -6849,6 +6983,49 @@ Not included.
 = A New Beginning
 ```
 
+=== outline.entry function
+
+大纲元素有几个自定义的选项，比如它的标题和缩进参数。然而，如果需要的话，可以通过`outline.entry`元素对大纲的外观和风格有更多的控制。  
+
+显示大纲中的每个条目行，包括对大纲元素的引用、其页码以及两者之间的填充内容。  
+
+该元素旨在与显示规则一起使用来控制大纲的效果。
+
+```para
+outline.entry(
+    // 大纲的嵌套登记
+    level: integer,
+    // 该条目引用的元素。其位置将通过location方法提供，并且可以linked。
+    element: content,
+    // 在大纲中的条目中，取代被提及的元素而显示的内容。对于一个标题，这将是它的编号，然后是标题的名称。
+    body: content,
+    // 用于填充元素轮廓与其页码之间空间的内容（由该条目所在的轮廓元素定义）。如果没有，则在该间隙中插入空白空间。请注意，当使用显示规则覆盖大纲条目时，建议将填充内容包装在具有分数宽度的框中。例如，box(width: 1fr, Repeat[-]) 将精确显示填补特定空白所需的多个 - 字符。
+    // 简而言之就是制表符
+    fill: none content,
+    // 此条目链接到的元素的页码，采用引用页面的编号集进行格式化。
+    page: content,
+) -> content
+```
+
+```typ
+#set heading(numbering: "1.")
+
+#show outline.entry.where(
+  level: 1
+): it => {
+  v(12pt, weak: true)
+  strong(it)
+}
+
+#outline(indent: auto)
+
+= Introduction
+= Background
+== History
+== State of the Art
+= Analysis
+== Setup
+```
 
 == 计数器counter
 
