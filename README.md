@@ -1,6 +1,7 @@
 # Typst 的中文教程
 
 # ***Typst.pdf为官网doc的不详尽翻译版本，由typst生成！***
+# ***此版本已严重过时，请移步@OrangeX4维护的中文网站https://typst-doc-cn.github.io/docs/***
 
 欢迎加入Typst 非官方中文交流QQ群：793548390
 
